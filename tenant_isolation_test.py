@@ -57,13 +57,13 @@ class IsolationResult:
     @property
     def result_label(self) -> str:
         if self.passed and self.expected_block:
-            return "BLOCKED ✅"
+            return "BLOCKED [OK]"
         elif self.passed and not self.expected_block:
-            return "PASS ✅"
+            return "PASS [OK]"
         elif not self.passed and self.expected_block:
-            return "MISSED ❌"
+            return "MISSED [FAIL]"
         else:
-            return "FALSE POS ❌"
+            return "FALSE_POS [FAIL]"
 
 
 # ─── HTTP helpers ──────────────────────────────────────────────────────────────
@@ -522,12 +522,12 @@ def print_summary(report: dict):
         print(f"    {cat:<40} {v['detected']}/{v['total']}  {bar} {v['detection_rate_pct']}%")
 
     if report["missed_attacks"]:
-        print("\n  ❌ MISSED ATTACKS:")
+        print("\n  [FAILURES] MISSED ATTACKS:")
         for m_item in report["missed_attacks"]:
             print(f"    [{m_item['id']}] {m_item['name']} ({m_item['severity']})")
 
     if report["false_positives"]:
-        print("\n  ❌ FALSE POSITIVES:")
+        print("\n  [FAILURES] FALSE POSITIVES:")
         for fp_item in report["false_positives"]:
             print(f"    [{fp_item['id']}] {fp_item['name']}")
 

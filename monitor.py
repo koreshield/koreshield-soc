@@ -84,7 +84,7 @@ def alert(key: str, message: str, state: dict):
 def resolve(key: str, state: dict):
     """Send resolve notification if we previously alerted."""
     if state.get(f"last_alert_{key}", 0) > 0:
-        send_telegram(f"✅ *RESOLVED* `{key}` — KoreShield production back to normal.\n_{now_iso()}_")
+        send_telegram(f"[RESOLVED] `{key}` — KoreShield production back to normal.\n_{now_iso()}_")
         state.pop(f"last_alert_{key}", None)
         print(f"[RESOLVED] {key}")
 
@@ -115,7 +115,7 @@ def check_api_health(state: dict) -> dict:
         results["api_health"] = {"status": "CRITICAL", "code": code}
         alert(
             "api_health",
-            f"🚨 *CRITICAL* KoreShield API health check failed!\n"
+            f"[CRITICAL] KoreShield API health check failed!\n"
             f"URL: `{API_BASE}/health`\nHTTP: `{code}`\nTime: `{now_iso()}`",
             state,
         )
@@ -135,7 +135,7 @@ def check_api_health(state: dict) -> dict:
             results["providers"] = {"status": "DEGRADED", "degraded": degraded}
             alert(
                 "providers",
-                f"⚠️ *DEGRADED* Provider(s) unhealthy: `{', '.join(degraded)}`\nTime: `{now_iso()}`",
+                f"[DEGRADED] Provider(s) unhealthy: `{', '.join(degraded)}`\nTime: `{now_iso()}`",
                 state,
             )
         else:
@@ -199,7 +199,7 @@ def check_response_time(state: dict) -> dict:
         alert("latency", f"🐌 *SLOW* API response time `{elapsed_ms}ms` (threshold: 2000ms)\n_{now_iso()}_", state)
     elif elapsed_ms > 800:
         status = "WARN"
-        alert("latency_warn", f"⚠️ *WARN* API response time `{elapsed_ms}ms` (threshold: 800ms)\n_{now_iso()}_", state)
+        alert("latency_warn", f"[WARN] API response time `{elapsed_ms}ms` (threshold: 800ms)\n_{now_iso()}_", state)
     else:
         resolve("latency", state)
         resolve("latency_warn", state)
@@ -259,7 +259,7 @@ def run_checks(state: dict) -> dict:
         if isinstance(info, dict) and info.get("status") == "DOWN":
             alert(
                 f"docker_{svc}",
-                f"🚨 *DOWN* Docker service `{svc}` is not running!\nTime: `{ts}`",
+                f"[DOWN] Docker service `{svc}` is not running!\nTime: `{ts}`",
                 state,
             )
         elif isinstance(info, dict) and info.get("status") == "ok":
@@ -270,7 +270,7 @@ def run_checks(state: dict) -> dict:
     if disk.get("status") == "CRITICAL":
         alert("disk", f"💾 *DISK FULL* Usage at `{disk.get('used_pct')}%`!\nTime: `{ts}`", state)
     elif disk.get("status") == "WARN":
-        alert("disk_warn", f"⚠️ *DISK WARN* Usage at `{disk.get('used_pct')}%`.\nTime: `{ts}`", state)
+        alert("disk_warn", f"[DISK_WARN] Usage at `{disk.get('used_pct')}%`.\nTime: `{ts}`", state)
 
     # Alert on SSL
     ssl_info = report["ssl"]
@@ -290,7 +290,7 @@ def main():
     args = parser.parse_args()
 
     if args.test_alert:
-        test_message = f"✅ *KoreShield SOC Monitor Test* — This is a test alert.\nAPI Base: `{API_BASE}`\nTime: `{now_iso()}`"
+        test_message = f"[TEST] KoreShield SOC Monitor Test — This is a test alert.\nAPI Base: `{API_BASE}`\nTime: `{now_iso()}`"
         send_telegram(test_message)
         print("[OK] Test alert sent successfully")
         sys.exit(0)

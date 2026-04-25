@@ -740,7 +740,7 @@ def print_summary(report: dict):
         bar = "█" * int(v["detection_rate_pct"] / 10)
         print(f"    {cat:<25} {v['detected']}/{v['total']}  {bar} {v['detection_rate_pct']}%")
     if report["missed_attacks"]:
-        print(f"\n  ⚠️  Missed Attacks ({len(report['missed_attacks'])}):")
+        print(f"\n  [MISSED] Attacks ({len(report['missed_attacks'])}):")
         for m_ in report["missed_attacks"]:
             print(f"    [{m_['id']}] {m_['severity']:<8}  {m_['description']}")
     print(f"{'='*70}\n")
