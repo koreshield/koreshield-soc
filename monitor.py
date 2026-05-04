@@ -196,7 +196,7 @@ def check_response_time(state: dict) -> dict:
     status = "ok"
     if elapsed_ms > 2000:
         status = "CRITICAL"
-        alert("latency", f"🐌 *SLOW* API response time `{elapsed_ms}ms` (threshold: 2000ms)\n_{now_iso()}_", state)
+        alert("latency", f"[SLOW] *SLOW* API response time `{elapsed_ms}ms` (threshold: 2000ms)\n_{now_iso()}_", state)
     elif elapsed_ms > 800:
         status = "WARN"
         alert("latency_warn", f"[WARN] API response time `{elapsed_ms}ms` (threshold: 800ms)\n_{now_iso()}_", state)
@@ -268,14 +268,14 @@ def run_checks(state: dict) -> dict:
     # Alert on disk
     disk = report["disk"]
     if disk.get("status") == "CRITICAL":
-        alert("disk", f"💾 *DISK FULL* Usage at `{disk.get('used_pct')}%`!\nTime: `{ts}`", state)
+        alert("disk", f"[STORAGE] *DISK FULL* Usage at `{disk.get('used_pct')}%`!\nTime: `{ts}`", state)
     elif disk.get("status") == "WARN":
         alert("disk_warn", f"[DISK_WARN] Usage at `{disk.get('used_pct')}%`.\nTime: `{ts}`", state)
 
     # Alert on SSL
     ssl_info = report["ssl"]
     if ssl_info.get("days_until_expiry", 999) <= 14:
-        alert("ssl", f"🔒 *SSL EXPIRING* Certificate expires in `{ssl_info.get('days_until_expiry')} days`!\nTime: `{ts}`", state)
+        alert("ssl", f"[LOCK] *SSL EXPIRING* Certificate expires in `{ssl_info.get('days_until_expiry')} days`!\nTime: `{ts}`", state)
 
     return report
 

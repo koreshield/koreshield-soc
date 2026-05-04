@@ -628,10 +628,10 @@ def run_suite(api_base: str, api_key: str, verbose: bool = False) -> list[TestRe
         expected_safe = p.get("expected_safe", False)
         if expected_safe:
             # Benign: we want NOT detected
-            icon = "✅ PASS" if not result.detected else "❌ FALSE POS"
+            icon = "[YES] PASS" if not result.detected else "[NO] FALSE POS"
         else:
             # Attack: we want detected
-            icon = "✅ DETECTED" if result.detected else "❌ MISSED"
+            icon = "[YES] DETECTED" if result.detected else "[NO] MISSED"
 
         print(f"  {icon:15}  [{p['id']}] {p['description'][:55]:<55}  {result.response_ms:4}ms  conf={result.confidence:.2f}")
         if result.error:
